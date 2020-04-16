@@ -301,7 +301,7 @@ if michigan_cont == "y":
         fulcrumtext = regex.sub('', fulcrumugly)
         fulcrumtext = fulcrumtext.lower()
         fulcrum_searchtxt = "".join([fulcrum_searchtxt,fulcrumtext])
-        
+
 #vitalsource/textbook searcher
 #could be used for general textbook searching
 vitalsource_cont = input("Search textbooks/vitalsource? (press y): ")
@@ -394,7 +394,7 @@ while cont == "y":
     if vitalsource_cont == "y":
         return_helper(textbook_searcher(tb_issn_col,issn),request)
     if gutenberg_cont == "y":
-        return_helper(pg_searcher(title,author,fin))
+        return_helper(pg_searcher(title,author,fin),request)
     print('----------------')
     request.append('----------------')
     list_to_file(request,title + "_" "results")
