@@ -290,6 +290,7 @@ def return_helper(result,list):
     else:
         print(result)
         list.append(result)
+
 #helper for converting list to textfile
 def list_to_file(var_list,name):
     file_name = name + '.txt'

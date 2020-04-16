@@ -107,10 +107,8 @@ def hathi_access(title,author):
         if len(hathi_elements) > 0 and author_test in authors and title_test in titles:
             hathi_list = [{elem.getText():elem.get('href')} for elem in hathi_elements]
             return "Temporary access in Hathi.",hathi_url
-
         else:
             return "Not found in Hathi."
-
     else:
         return "Not found in Hathi"
 
@@ -134,10 +132,8 @@ def red_shelf_access(title, author):
             if title_nospace in t2:
                 
                 return "Found in Red Shelf.",red_shelf_url
-
             else:
                 return "Not found in Red Shelf."
-
         else:
             return "Not found in Red Shelf"
     else:
@@ -276,6 +272,7 @@ def return_helper(result,list):
     else:
         print(result)
         list.append(result)
+
 #helper for converting list to textfile
 def list_to_file(var_list,name):
     file_name = name + '.txt'
