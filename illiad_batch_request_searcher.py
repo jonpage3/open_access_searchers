@@ -210,6 +210,7 @@ def michigan_searcher(title, author, searchtext):
     else:
         return "Not found in Michigan Press Open Access."
 
+
 #right now only searching ISSNs
 def textbook_searcher(tb_issn_col,issn):
     if issn == "":
@@ -222,6 +223,31 @@ def textbook_searcher(tb_issn_col,issn):
                 return "Found in Textbooks", "Could be available here: " + vital_url
             else:
                 return "Not found in Students Stores textbook spreadsheet."
+
+#Project Gutenberg searcher
+#currently using database GUTINDEX.txt
+def pg_searcher(title_input,author_input,file):
+    regex = re.compile('[^a-zA-Z]')
+    title = regex.sub('', title_input)
+    author = regex.sub('', author_input)
+    title = title.lower()
+    author = author.lower()
+    acc = 0
+    for line in file:
+        line = line.lower()
+        line = regex.sub('',line)
+        if title in line and author in line:
+            acc +=1
+
+    if acc > 0:
+        query = title_input + ' ' + author_input
+        query = query.replace(' ', '+')
+        gutenberg_url = "http://www.gutenberg.org/ebooks/search/?query=%s" % query
+        return "Found at Project Gutenberg.", gutenberg_url
+    else:
+        return "Not found at Project Gutenberg."
+
+
 ###ask whether we want
 ###to search certain dbs
 jstor_cont = input("Search JSTOR? (press y): ")
@@ -278,6 +304,11 @@ if vitalsource_cont == "y":
     textbook_workbook = xlrd.open_workbook('Spring 2020 Book List.xlsx')
     textbooks = textbook_workbook.sheet_by_index(0)
     tb_issn_col = 2
+
+#to search project gutenberg
+gutenberg_cont = input("Search Project Gutenberg? (press y): ")
+if gutenberg_cont == 'y':
+    fin = open('GUTINDEX.txt', encoding="utf-8")
 
 ###helper functions###
 #helper function for appending and printing
@@ -350,7 +381,8 @@ for row in range(1,books.nrows):
     if vitalsource_cont == "y":
         issn = str(books.cell_value(row,issn_col))
         return_helper(textbook_searcher(tb_issn_col,issn),batch)
-
+    if gutenberg_cont == "y":
+        return_helper(pg_searcher(title,author,fin),batch)
     print('----------------')
     batch.append('----------------')
 

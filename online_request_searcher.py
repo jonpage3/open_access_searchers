@@ -340,6 +340,7 @@ def return_helper(result,list):
         print(result)
         list.append(result)
 
+
 #helper for converting list to textfile
 def list_to_file(var_list,name):
     file_name = name + '.txt'
@@ -349,7 +350,8 @@ def list_to_file(var_list,name):
     for item in var_list:
         outfile.write(item + '\n')
     outfile.close()
-    return (file_name)
+    return file_name
+
 
 cont = "y"
 while cont == "y":
