@@ -400,6 +400,6 @@ while cont == "y":
     print('----------------')
     request.append('----------------')
     list_to_file(request,title + "_" "results")
-    cont = input("Another search? (press y)")
-    print("Press any other button to exit.")
+    print("Another search? (press y)  Enter any other button to exit.")
+    cont = input("Enter: ")
 
