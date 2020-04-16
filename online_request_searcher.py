@@ -205,10 +205,34 @@ def textbook_searcher(tb_issn_col,issn):
             else:
                 return "Not found in Students Stores textbook spreadsheet."
 
+#Project Gutenberg searcher
+#currently using database GUTINDEX.txt
+def pg_searcher(title_input,author_input,file):
+    regex = re.compile('[^a-zA-Z]')
+    title = regex.sub('', title_input)
+    author = regex.sub('', author_input)
+    title = title.lower()
+    author = author.lower()
+    acc = 0
+    for line in file:
+        line = line.lower()
+        line = regex.sub('',line)
+        if title in line and author in line:
+            acc +=1
+
+    if acc > 0:
+        query = title_input + ' ' + author_input
+        query = query.replace(' ', '+')
+        gutenberg_url = "http://www.gutenberg.org/ebooks/search/?query=%s" % query
+        return "Found at Project Gutenberg.", gutenberg_url
+    else:
+        return "Not found at Project Gutenberg."
+
 ####ask whether or not to load
 ####db spreadsheets for the following
-jstor_cont = input("Search JSTOR? (press y): ")
+jstor_cont = input("Search JSTOR open content? (press y): ")
 if jstor_cont == "y":
+    print('Loading JSTOR database.')
     try:
         jstor_workbook = xlrd.open_workbook('jstor_books.xlsx')
         jstor_books = jstor_workbook.sheet_by_index(0)
@@ -223,6 +247,7 @@ if jstor_cont == "y":
 
 muse_cont = input("Search Project Muse? (press y): ")
 if muse_cont == "y":
+    print('Loading Project Muse database.')
     try:
         muse_workbook = xlrd.open_workbook("project_muse_free_covid_book.xlsx")
         muse_books = muse_workbook.sheet_by_index(0)
@@ -235,8 +260,9 @@ if muse_cont == "y":
         input("Press enter to continue: ")
         muse_cont = "n"
 
-ohio_cont = input("Search Ohio? (press y): ")
+ohio_cont = input("Search Ohio State Press? (press y): ")
 if ohio_cont == "y":
+    print('Loading OSU Press database.')
     try:
         ohio_workbook = xlrd.open_workbook("OhioStateUnivPress-OpenTitles-KnowledgeBank.xlsx")
         ohio_books = ohio_workbook.sheet_by_index(0)
@@ -249,6 +275,7 @@ if ohio_cont == "y":
         ohio_cont = 'n'
 science_direct_cont = input("Science Direct? (press y): ")
 if science_direct_cont == "y":
+    print('Loading Science Direct database.')
     try:
         sd_workbook = xlrd.open_workbook("sciencedirect.xlsx")
         sd_books = sd_workbook.sheet_by_index(0)
@@ -261,8 +288,9 @@ if science_direct_cont == "y":
         input("Press enter to continue: ")
         science_direct_cont = 'n'
 #michigan searcher
-michigan_cont = input("Search Michigan? (press y): ")
+michigan_cont = input("Search Michigan Press? (press y): ")
 if michigan_cont == "y":
+    print('Loading Michigan database.')
     fulcrum_searchtxt = ""
     regex = re.compile('[^a-zA-Z]')
     for n in range(1,13):
@@ -273,11 +301,12 @@ if michigan_cont == "y":
         fulcrumtext = regex.sub('', fulcrumugly)
         fulcrumtext = fulcrumtext.lower()
         fulcrum_searchtxt = "".join([fulcrum_searchtxt,fulcrumtext])
-        print(fulcrum_searchtxt)
+        
 #vitalsource/textbook searcher
 #could be used for general textbook searching
 vitalsource_cont = input("Search textbooks/vitalsource? (press y): ")
 if vitalsource_cont == "y":
+    print('Loading textbook database.')
     try:
         textbook_workbook = xlrd.open_workbook('Spring 2020 Book List.xlsx')
         textbooks = textbook_workbook.sheet_by_index(0)
@@ -287,6 +316,18 @@ if vitalsource_cont == "y":
         print("If file exists rename: Spring 2020 Book List.xlsx, and restart program.")
         input("Press enter to continue: ")
         vitalsource_cont = 'n'
+
+#search gutenberg text file
+gutenberg_cont = input("Search Project Gutenberg? (press y): ")
+if gutenberg_cont == 'y':
+    print('Loading Gutenberg database.')
+    try:
+        fin = open('GUTINDEX.txt', encoding="utf-8")
+    except FileNotFoundError:
+        print("GUTINDEX.txt file not found.")
+        input("Press enter to continue: ")
+        gutenberg_cont = 'n'
+
 ###helper functions###
 #helper function for appending and printing
 #what is returned from functions
@@ -352,6 +393,8 @@ while cont == "y":
         return_helper(michigan_searcher(title,author,fulcrum_searchtxt),request)
     if vitalsource_cont == "y":
         return_helper(textbook_searcher(tb_issn_col,issn),request)
+    if gutenberg_cont == "y":
+        return_helper(pg_searcher(title,author,fin))
     print('----------------')
     request.append('----------------')
     list_to_file(request,title + "_" "results")
