@@ -1,6 +1,6 @@
 
 ###Version of online request searcher
-###for general use
+###for general use; takes in user input
 import requests, bs4, xlrd, re
 
 s = requests.Session()
