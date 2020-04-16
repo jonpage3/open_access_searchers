@@ -284,7 +284,6 @@ def list_to_file(var_list,name):
     outfile.close()
     return (file_name)
 
-
 cont = "y"
 while cont == "y":
     request = []
@@ -297,9 +296,13 @@ while cont == "y":
         for i in author_num:
             if i.isalpha() or i.isspace():
                 author = "".join([author, i])
-    print(title.upper())
-    print(author)
+    if vitalsource_cont == "y":
+        issn = input('Enter ISBN: ')
 
+    print(title.upper())
+    request.append(title.upper())
+    print(author)
+    request.append(author)
     open_library_result = open_library_access(title,author)
     return_helper(open_library_result,request)
     red_shelf_result = red_shelf_access(title,author)
@@ -308,6 +311,8 @@ while cont == "y":
     return_helper(hathi_result,request)
     proquest_result = proquest_access(title,author)
     return_helper(proquest_result,request)
+    cambridge_result = cambridge_access(title,author)
+    return_helper(cambridge_result,request)
 
     if jstor_cont == "y":
         return_helper(spread_sheet_searcher(title,author,jstor_books,jstortitle_col,jstorauthor_col,"JSTOR."),request)
@@ -320,7 +325,6 @@ while cont == "y":
     if michigan_cont == "y":
         return_helper(michigan_searcher(title,author,fulcrum_searchtxt),request)
     if vitalsource_cont == "y":
-        issn = input('Enter ISBN: ')
         return_helper(textbook_searcher(tb_issn_col,issn),request)
     print('----------------')
     request.append('----------------')

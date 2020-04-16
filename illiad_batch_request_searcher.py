@@ -328,7 +328,9 @@ for row in range(1,books.nrows):
     return_helper(hathi_result, batch)
     proquest_result = proquest_access(title, author)
     return_helper(proquest_result, batch)
-
+    cambridge_result = cambridge_access(title, author)
+    return_helper(cambridge_result, batch)
+    
     if jstor_cont == "y":
         return_helper(spread_sheet_searcher(title, author, jstor_books, jstortitle_col, jstorauthor_col, "JSTOR."),
                       batch)
