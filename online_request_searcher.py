@@ -209,36 +209,57 @@ def textbook_searcher(tb_issn_col,issn):
 ####db spreadsheets for the following
 jstor_cont = input("Search JSTOR? (press y): ")
 if jstor_cont == "y":
-    jstor_workbook = xlrd.open_workbook('jstor_books.xlsx')
-    jstor_books = jstor_workbook.sheet_by_index(0)
-    jstorheadings = jstor_books.row_values(0)
-    jstortitle_col = jstorheadings.index('Title')
-    jstorauthor_col = jstorheadings.index('Authors')
+    try:
+        jstor_workbook = xlrd.open_workbook('jstor_books.xlsx')
+        jstor_books = jstor_workbook.sheet_by_index(0)
+        jstorheadings = jstor_books.row_values(0)
+        jstortitle_col = jstorheadings.index('Title')
+        jstorauthor_col = jstorheadings.index('Authors')
+    except FileNotFoundError:
+        print("jstor spreadsheet not found.")
+        print("If file exists rename: jstor_books.xlsx, and restart program. ")
+        input("Press enter to continue: ")
+        jstor_cont = "n"
 
 muse_cont = input("Search Project Muse? (press y): ")
 if muse_cont == "y":
-    muse_workbook = xlrd.open_workbook("project_muse_free_covid_book.xlsx")
-    muse_books = muse_workbook.sheet_by_index(0)
-    museheadings = muse_books.row_values(0)
-    musetitle_col = museheadings.index('Title')
-    museauthor_col = museheadings.index('Contributor')
+    try:
+        muse_workbook = xlrd.open_workbook("project_muse_free_covid_book.xlsx")
+        muse_books = muse_workbook.sheet_by_index(0)
+        museheadings = muse_books.row_values(0)
+        musetitle_col = museheadings.index('Title')
+        museauthor_col = museheadings.index('Contributor')
+    except FileNotFoundError:
+        print("Project Muse spreadsheet not found.")
+        print("If file exists rename: project_muse_free_covid_book.xlsx, and restart program.")
+        input("Press enter to continue: ")
+        muse_cont = "n"
 
 ohio_cont = input("Search Ohio? (press y): ")
 if ohio_cont == "y":
-    ohio_workbook = xlrd.open_workbook("OhioStateUnivPress-OpenTitles-KnowledgeBank.xlsx")
-    ohio_books = ohio_workbook.sheet_by_index(0)
-    ohioheadings = ohio_books.row_values(0)
-    ohiotitle_col = ohioheadings.index('Title')
-    ohioauthor_col = ohioheadings.index('Contributors')
-
+    try:
+        ohio_workbook = xlrd.open_workbook("OhioStateUnivPress-OpenTitles-KnowledgeBank.xlsx")
+        ohio_books = ohio_workbook.sheet_by_index(0)
+        ohioheadings = ohio_books.row_values(0)
+        ohiotitle_col = ohioheadings.index('Title')
+        ohioauthor_col = ohioheadings.index('Contributors')
+    except FileNotFoundError:
+        print("Ohio State Press open titles spreadsheet not found.")
+        input("Press enter to continue: ")
+        ohio_cont = 'n'
 science_direct_cont = input("Science Direct? (press y): ")
 if science_direct_cont == "y":
-    sd_workbook = xlrd.open_workbook("sciencedirect.xlsx")
-    sd_books = sd_workbook.sheet_by_index(0)
-    sdheadings = sd_books.row_values(0)
-    sdtitle_col = sdheadings.index("publication_title")
-    sdauthor_col = sdheadings.index("first_author")
-
+    try:
+        sd_workbook = xlrd.open_workbook("sciencedirect.xlsx")
+        sd_books = sd_workbook.sheet_by_index(0)
+        sdheadings = sd_books.row_values(0)
+        sdtitle_col = sdheadings.index("publication_title")
+        sdauthor_col = sdheadings.index("first_author")
+    except FileNotFoundError:
+        print("Science Direct items spreadsheet not found.")
+        print("If file exists rename: sciencedirect.xlsx, and restart program.")
+        input("Press enter to continue: ")
+        science_direct_cont = 'n'
 #michigan searcher
 michigan_cont = input("Search Michigan? (press y): ")
 if michigan_cont == "y":
@@ -252,15 +273,20 @@ if michigan_cont == "y":
         fulcrumtext = regex.sub('', fulcrumugly)
         fulcrumtext = fulcrumtext.lower()
         fulcrum_searchtxt = "".join([fulcrum_searchtxt,fulcrumtext])
-
+        print(fulcrum_searchtxt)
 #vitalsource/textbook searcher
 #could be used for general textbook searching
 vitalsource_cont = input("Search textbooks/vitalsource? (press y): ")
 if vitalsource_cont == "y":
-    textbook_workbook = xlrd.open_workbook('Spring 2020 Book List.xlsx')
-    textbooks = textbook_workbook.sheet_by_index(0)
-    tb_issn_col = 2
-
+    try:
+        textbook_workbook = xlrd.open_workbook('Spring 2020 Book List.xlsx')
+        textbooks = textbook_workbook.sheet_by_index(0)
+        tb_issn_col = 2
+    except FileNotFoundError:
+        print("Textbooks spreadsheet not found.")
+        print("If file exists rename: Spring 2020 Book List.xlsx, and restart program.")
+        input("Press enter to continue: ")
+        vitalsource_cont = 'n'
 ###helper functions###
 #helper function for appending and printing
 #what is returned from functions
@@ -329,5 +355,6 @@ while cont == "y":
     print('----------------')
     request.append('----------------')
     list_to_file(request,title + "_" "results")
-    cont = input("Another search?")
+    cont = input("Another search? (press y)")
+    print("Press any other button to exit.")
 
