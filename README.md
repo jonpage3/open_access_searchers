@@ -9,17 +9,17 @@ UNC-Chapel Hill focused.
 
 **Databases**
 
--[Open Library](https://openlibrary.org/)
--[Red Shelf](https://studentresponse.redshelf.com/)
--[HathiTrust](https://www.hathitrust.org/)
--[ProQuest](http://guides.lib.unc.edu/go.php?c=23609287)
--[Cambridge Online](https://guides.lib.unc.edu/go.php?c=52182099)
--[JSTOR](https://www.jstor.org/open/)
--[ProjectMuse](https://about.muse.jhu.edu/resources/freeresourcescovid19/#freepublishers)
--[OSU Press](https://kb.osu.edu/handle/1811/131)
--[Science Direct](https://guides.lib.unc.edu/go.php?c=23609201)
--[Michigan Press](https://www.fulcrum.org/michigan)
--[Project Gutenberg](http://www.gutenberg.org/ebooks/)
+- [Open Library](https://openlibrary.org/)
+- [Red Shelf](https://studentresponse.redshelf.com/)
+- [HathiTrust](https://www.hathitrust.org/)
+- [ProQuest](http://guides.lib.unc.edu/go.php?c=23609287)
+- [Cambridge Online](https://guides.lib.unc.edu/go.php?c=52182099)
+- [JSTOR](https://www.jstor.org/open/)
+- [ProjectMuse](https://about.muse.jhu.edu/resources/freeresourcescovid19/#freepublishers)
+- [OSU Press](https://kb.osu.edu/handle/1811/131)
+- [Science Direct](https://guides.lib.unc.edu/go.php?c=23609201)
+- [Michigan Press](https://www.fulcrum.org/michigan)
+- [Project Gutenberg](http://www.gutenberg.org/ebooks/)
 
 
 
