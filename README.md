@@ -29,8 +29,10 @@ Spring 2020 Book List.xlsx
 
 GUTINDEX.txt (http://www.gutenberg.org/dirs/GUTINDEX.ALL)
 
-Run program:
+**Run program:**
+
 Run online_request_searcher:
+
 When first starting program enter 'y' for the static databases you want to search. This will load those spreadsheets listed above
 and will be used for remainder of time the program is running. 
 
