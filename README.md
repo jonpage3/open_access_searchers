@@ -18,10 +18,15 @@ UNC-Chapel Hill focused.
 To perform searches of the following databases download these files into same folder as program:
 
 jstor_books.xlsx (https://www.jstor.org/open/)
+
 project_muse_free_covid_book.xlsx (https://about.muse.jhu.edu/resources/freeresourcescovid19/#freepublishers)
+
 OhioStateUnivPress-OpenTitles-KnowledgeBank.xlsx (https://kb.osu.edu/handle/1811/131)
+
 sciencedirect.xlsx (https://guides.lib.unc.edu/go.php?c=23609201)
+
 Spring 2020 Book List.xlsx
+
 GUTINDEX.txt (http://www.gutenberg.org/dirs/GUTINDEX.ALL)
 
 Run program:
