@@ -1,11 +1,17 @@
 # open_access_searchers
+```
 Dependences: requests, bs4, xlrd, re
 Use pip install to download dependencies. 
+```
 
 This a program that searches for items in a set of open access and temporary access databases. 
 UNC-Chapel Hill focused.
 
-Setup:
+**Databases**
+-[Open Library] (https://openlibrary.org/)
+
+
+**Setup:**
 To perform searches of the following databases download these files into same folder as program:
 
 jstor_books.xlsx (https://www.jstor.org/open/)
