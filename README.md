@@ -14,6 +14,7 @@ UNC-Chapel Hill focused.
 
 
 **Setup:**
+
 To perform searches of the following databases download these files into same folder as program:
 
 jstor_books.xlsx (https://www.jstor.org/open/)
