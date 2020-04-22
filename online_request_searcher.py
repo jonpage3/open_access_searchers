@@ -377,7 +377,7 @@ def return_helper(result,list):
 def list_to_file(var_list,name):
     file_name = name + '.txt'
     #open file for writing
-    outfile = open(file_name, 'w')
+    outfile = open(file_name, 'w',encoding='utf-8')
     #write the list to file
     for item in var_list:
         outfile.write(item + '\n')
