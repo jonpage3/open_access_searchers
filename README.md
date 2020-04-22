@@ -44,13 +44,13 @@ GUTINDEX.txt (http://www.gutenberg.org/dirs/GUTINDEX.ALL)
 Run online_request_searcher:
 
 When first starting program enter 'y' for the static databases you want to search. This will load those spreadsheets listed above
-and will be used for remainder of time the program is running. 
+and those spreadsheets will be used for remainder of time the program is running. 
 
 Program will ask for title and author. Case-insensitive. Doesn't matter if you only have the title or only have author. 
 Program will ask for ISBN if you're searching the textbook database. 
 
-When program finishes search it will generate text file <title>_result.txt. 
+When program finishes search a text file <title>_result.txt will be generated. 
 
 Enter 'y' to run another search. 
 
-Work in progress. Check here for updates.
+
