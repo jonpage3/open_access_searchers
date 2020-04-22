@@ -6,111 +6,130 @@ import requests, bs4, xlrd, re
 s = requests.Session()
 
 #UNC catalog function
-#searches proquest
-#maybe add ISBN
-def proquest_access(title,author):
-    title_unc = title.replace(" ", "+")
-    author_no_end_space = author.strip(" ")
-    author_unc = author_no_end_space.replace(" ", "+")
-    query = author_unc + "+" + title_unc
-    cat_url = "https://catalog.lib.unc.edu/?utf8=%E2%9C%93&search_field=all_fields&q={query}&f%5Baccess_type_f%5D%5B%5D=Online".format(
+def unc_searcher(title,author):
+    # helper string
+    oncheck = "onlinefulltextavailable"
+    #compile regular expression
+    regex = re.compile('[^a-zA-Z]')
+    #string editing to make query
+    title = title.lower()
+    title = title.replace(" ", "+")
+    author = author.lower()
+    author = author.replace(" ", "+")
+    #query for unc url
+    query = title + "+" + author
+    unc_url = "https://catalog.lib.unc.edu/?utf8=%E2%9C%93&search_field=all_fields&q={query}&f%5Baccess_type_f%5D%5B%5D=Online".format(
         query=query)
-    cat_get = s.get(cat_url)
+    unc_get = s.get(unc_url)
+    #create bsoup object
+    uncSoup = bs4.BeautifulSoup(unc_get.text, 'html.parser')
+    #this is one way to select the items on the UNC page
+    #using schema.org/Thing seemed like the best way
+    unc_items = uncSoup.find_all("div", {"itemtype": "http://schema.org/Thing"})
 
-    catSoup = bs4.BeautifulSoup(cat_get.text, 'html.parser')
+    title = regex.sub('', title)
+    author = regex.sub('', author)
+    #dictionary in case multiple links
+    found_dic = {"Found at UNC: ": []}
+    unc_acc = 0
+    for item in unc_items:
+        search_soup = item.getText()
+        search_clean = regex.sub('', search_soup)
+        search_clean = search_clean.lower()
+        if title in search_clean and author in search_clean and oncheck in search_clean:
+            #for each item find all links
+            link_elems = item.find_all("a")
+            link_urls = [x.get("href") for x in link_elems]
+            for url in link_urls:
+                if url.startswith('/'):
+                    url = "https://catalog.lib.unc.edu" + url
+                found_dic["Found at UNC: "].append(url)
+            unc_acc +=1
 
-    catSoup_tags = catSoup.select('#documents')
-    if len(catSoup_tags) > 0:
-        catSoup_ugly = catSoup_tags[0].getText()
-        regex = re.compile('[^a-zA-Z]')
-        catSoup_caps = regex.sub('',catSoup_ugly)
-        search_text = catSoup_caps.lower()
-
-        #title cleanup
-        title_caps = regex.sub('', title)
-        title_test = title_caps.lower()
-        #author cleanup
-        author_caps = regex.sub('', author)
-        author_test = author_caps.lower()
-
-        if title_test in search_text and author_test in search_text and 'proquest' in search_text:
-            return 'Found in ProQuest',cat_url
-        else:
-            return "Not Found in ProQuest"
+    if unc_acc > 0:
+        return found_dic
     else:
-        return "Not Found in Proquest"
+        return "Not found in UNC catalog."
 
-#cambridge access searcher
-def cambridge_access(title, author):
+
+#hathi temp access searcher
+def hathi_temp_access(title, author):
+    title = title.lower()
+    author = author.lower()
     title_unc = title.replace(" ", "+")
     author_no_end_space = author.strip(" ")
     author_unc = author_no_end_space.replace(" ", "+")
     query = author_unc + "+" + title_unc
-    cat_url = "https://catalog.lib.unc.edu/?utf8=%E2%9C%93&search_field=all_fields&q={query}&f%5Baccess_type_f%5D%5B%5D=Online".format(
-                query=query)
-    cat_get = s.get(cat_url)
+    hathi_url = "https://catalog.lib.unc.edu/?utf8=%E2%9C%93&search_field=all_fields&q={query}&f%5Baccess_type_f%5D%5B%5D=Online".format(
+        query=query)
+    hathi_get = s.get(hathi_url)
+    hathiSoup = bs4.BeautifulSoup(hathi_get.text, 'html.parser')
+    hathi_items = hathiSoup.find_all("div", {"itemtype": "http://schema.org/Thing"})
 
-    catSoup = bs4.BeautifulSoup(cat_get.text, 'html.parser')
+    regex = re.compile('[^a-zA-Z]')
+    title = regex.sub('', title)
+    author = regex.sub('', author)
+    #string for checking
+    oncheck = "temporarilyavailable"
+    hathi_dic = {"Temporary access: ": []}
+    hathi_acc = 0
+    for item in hathi_items:
+        search_soup = item.getText()
+        search_clean = regex.sub('', search_soup)
+        search_clean = search_clean.lower()
+        if title in search_clean and author in search_clean and oncheck in search_clean:
+            bib_num = item.get("data-document-id")
+            hathi_url = "https://catalog.lib.unc.edu/catalog/" + bib_num
+            hathi_dic["Temporary access: "].append(hathi_url)
+            hathi_acc +=1
 
-    catSoup_tags = catSoup.select('#documents')
-    if len(catSoup_tags) > 0:
-        catSoup_ugly = catSoup_tags[0].getText()
+    if hathi_acc > 0:
+         return hathi_dic
+    else:
+         return "Not found in HathiTemp Access"
+
+
+# search actual hathitrust site for always accessible
+def hathi_full_time_access(title,author):
+    title = title.lower()
+    author = author.strip(" ")
+    title_query = title.replace(" ","+")
+    author_query = author.replace(" ","+")
+    query = title_query + "+" + author_query
+    ht_url = "https://catalog.hathitrust.org/Search/Home?lookfor={query}&ft=ft&setft=true".format(
+        query=query)
+    ht_page = s.get(ht_url)
+    htSoup = bs4.BeautifulSoup(ht_page.text, 'html.parser')
+    records = htSoup.select('.record')
+
+    if len(records) > 0:
+        hathi_acc = 0
+        # get text for each record
+        records_list = [x.getText() for x in records]
+        # cleanup using regular expressions
         regex = re.compile('[^a-zA-Z]')
-        catSoup_caps = regex.sub('', catSoup_ugly)
-        search_text = catSoup_caps.lower()
-
-        # title cleanup
+        record_clean_list = []
+        for record in records_list:
+            record_clean = regex.sub('', record)
+            record_clean = record_clean.lower()
+            record_clean_list.append(record_clean)
+        # clean our search terms
         title_caps = regex.sub('', title)
         title_test = title_caps.lower()
-        # author cleanup
         author_caps = regex.sub('', author)
         author_test = author_caps.lower()
 
-        if title_test in search_text and 'cambridge' in search_text and author_test in search_text:
-            return 'Available through Cambridge Press Online',cat_url
-
+        for record in record_clean_list:
+            if title_test in record and author_test in record:
+                hathi_acc += 1
+        if hathi_acc > 0:
+            return "Found in HathiTrust fulltime access.", ht_url
         else:
-            return "Not Found in Cambridge Press."
+            return "Not found in HathiTrust fulltime access."
+
     else:
-        return "Not Found in Cambridge Press."
+        return "Not found in HathiTrust fulltime access."
 
-def hathi_access(title,author):
-    title_unc = title.replace(" ","+")
-    author_no_end_space = author.strip(" ")
-    author_unc = author_no_end_space.replace(" ","+")
-    query = author_unc + "+"  + title_unc
-    hathi_url = "https://catalog.lib.unc.edu/?utf8=%E2%9C%93&search_field=all_fields&q={query}&f%5Baccess_type_f%5D%5B%5D=Online".format(query=query)
-    hathi_get = s.get(hathi_url)
-
-    hathiSoup = bs4.BeautifulSoup(hathi_get.text, 'html.parser')
-    hathi_elements = hathiSoup.find_all("a",{"class":"link-type-fulltext link-open-access"})
-    author_tags = hathiSoup.select('#facet-author_facet_f')
-    title_tags = hathiSoup.select('#documents')
-    if len(author_tags) > 0 and len(title_tags) > 0:
-        #string cleanup, test to see if author is there
-        author_ugly = author_tags[0].getText()
-        regex = re.compile('[^a-zA-Z]')
-        authors_ugly_caps = regex.sub('',author_ugly)
-        author_caps = regex.sub('',author)
-        authors = authors_ugly_caps.lower()
-        author_test = author_caps.lower()
-
-        #string cleanup, test to see if title is there
-        titles_ugly = title_tags[0].getText()
-        titles_ugly_caps = regex.sub('',titles_ugly)
-        title_caps = regex.sub('',title)
-        titles = titles_ugly_caps.lower()
-        title_test = title_caps.lower()
-
-        #print(authors)
-        #print(author_test)
-        if len(hathi_elements) > 0 and author_test in authors and title_test in titles:
-            hathi_list = [{elem.getText():elem.get('href')} for elem in hathi_elements]
-            return "Temporary access in Hathi.",hathi_url
-        else:
-            return "Not found in Hathi."
-    else:
-        return "Not found in Hathi"
 
 ###function for red_shelf_access
 ###pretty much works
@@ -139,6 +158,7 @@ def red_shelf_access(title, author):
     else:
         return "Not found in Red Shelf"
 
+
 #open libray function
 def open_library_access(title,author):
     title_open = title.replace(" ", "+")
@@ -166,6 +186,7 @@ def open_library_access(title,author):
         else:
             return 'Not found in Open Library.'
 
+
 #basic searcher for the different books with spreadsheets
 def spread_sheet_searcher(title,author,books,title_col,author_col,db_name):
     acc = 0
@@ -180,6 +201,7 @@ def spread_sheet_searcher(title,author,books,title_col,author_col,db_name):
     else:
         return "Not found in "+ db_name
 
+
 ###searching michigan fulcrum project
 def michigan_searcher(title,author,searchtext):
     regex = re.compile('[^a-zA-Z]')
@@ -191,6 +213,7 @@ def michigan_searcher(title,author,searchtext):
         return "Found in Michigan Press Open Access."
     else:
         return "Not found in Michigan Press Open Access."
+
 
 #right now only searching ISSNs
 def textbook_searcher(tb_issn_col,issn):
@@ -204,6 +227,7 @@ def textbook_searcher(tb_issn_col,issn):
                 return "Found in Textbooks", "Could be available here: " + vital_url
             else:
                 return "Not found in Students Stores textbook spreadsheet."
+
 
 #Project Gutenberg searcher
 #currently using database GUTINDEX.txt
@@ -227,6 +251,7 @@ def pg_searcher(title_input,author_input,file):
         return "Found at Project Gutenberg.", gutenberg_url
     else:
         return "Not found at Project Gutenberg."
+
 
 ####ask whether or not to load
 ####db spreadsheets for the following
@@ -336,6 +361,13 @@ def return_helper(result,list):
         for item in result:
             print(item)
             list.append(item)
+    elif result.__class__.__name__ == 'dict':
+        for key in result:
+            print(key)
+            list.append(key)
+            for elem in result[key]:
+                print(elem)
+                list.append(elem)
     else:
         print(result)
         list.append(result)
@@ -372,16 +404,19 @@ while cont == "y":
     request.append(title.upper())
     print(author)
     request.append(author)
+
+    unc_result = unc_searcher(title,author)
+    return_helper(unc_result,request)
+
+    hathi_temp_result = hathi_temp_access(title,author)
+    return_helper(hathi_temp_result,request)
+    hathi_full_time_result = hathi_full_time_access(title,author)
+    return_helper(hathi_full_time_result,request)
+
     open_library_result = open_library_access(title,author)
     return_helper(open_library_result,request)
     red_shelf_result = red_shelf_access(title,author)
     return_helper(red_shelf_result,request)
-    hathi_result = hathi_access(title,author)
-    return_helper(hathi_result,request)
-    proquest_result = proquest_access(title,author)
-    return_helper(proquest_result,request)
-    cambridge_result = cambridge_access(title,author)
-    return_helper(cambridge_result,request)
 
     if jstor_cont == "y":
         return_helper(spread_sheet_searcher(title,author,jstor_books,jstortitle_col,jstorauthor_col,"JSTOR."),request)
