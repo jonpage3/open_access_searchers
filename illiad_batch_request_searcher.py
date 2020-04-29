@@ -269,12 +269,21 @@ def open_library_access(title, author):
 
 # basic searcher for the different books with spreadsheets
 def spread_sheet_searcher(title, author, books, title_col, author_col, db_name):
+    title = title.lower()
+    author = author.lower()
+    regex = re.compile('[^a-zA-Z]')
+    title = regex.sub('',title)
+    author = regex.sub('',author)
     acc = 0
     for row in range(1, books.nrows):
-        title_unformatted = books.cell_value(row, title_col)
-        author_unformatted = books.cell_value(row, author_col)
+        book_title = books.cell_value(row, title_col)
+        book_title = regex.sub('',book_title)
+        book_title = book_title.lower()
+        author_title = books.cell_value(row, author_col)
+        author_title = regex.sub('',author_title)
+        author_title = author_title.lower()
         # string cleanup for each
-        if title.lower() in title_unformatted.lower() and author.lower() in author_unformatted.lower():
+        if title in book_title and author in author_title:
             acc += 1
     if acc > 0:
         return "Found in " + db_name
