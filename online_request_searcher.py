@@ -261,10 +261,16 @@ def pg_searcher(title_input,author_input,file):
     else:
         return "Not found at Project Gutenberg."
 
+print("\t" + "\t" + "Welcome to the UNC online access searcher. Enter title/author or ISBN to search.")
+print("\t" + "\t" + "\t" + "\t" + "(must inclued ISBN to search for textbook database)")
+print(" ")
+print(" ")
+print("LOADING FILES")
 
-####ask whether or not to load
+#ask whether or not to load
 ####db spreadsheets for the following
-jstor_cont = input("Search JSTOR open content? (press y): ")
+#jstor_cont = input("Search JSTOR open content? (press y): ")
+jstor_cont = 'y'
 if jstor_cont == "y":
     print('Loading JSTOR database.')
     try:
@@ -279,7 +285,8 @@ if jstor_cont == "y":
         input("Press enter to continue: ")
         jstor_cont = "n"
 
-muse_cont = input("Search Project Muse? (press y): ")
+#muse_cont = input("Search Project Muse? (press y): ")
+muse_cont = 'y'
 if muse_cont == "y":
     print('Loading Project Muse database.')
     try:
@@ -294,7 +301,8 @@ if muse_cont == "y":
         input("Press enter to continue: ")
         muse_cont = "n"
 
-ohio_cont = input("Search Ohio State Press? (press y): ")
+#ohio_cont = input("Search Ohio State Press? (press y): ")
+ohio_cont = 'y'
 if ohio_cont == "y":
     print('Loading OSU Press database.')
     try:
@@ -307,7 +315,9 @@ if ohio_cont == "y":
         print("Ohio State Press open titles spreadsheet not found.")
         input("Press enter to continue: ")
         ohio_cont = 'n'
-science_direct_cont = input("Science Direct? (press y): ")
+
+#science_direct_cont = input("Science Direct? (press y): ")
+science_direct_cont = 'y'
 if science_direct_cont == "y":
     print('Loading Science Direct database.')
     try:
@@ -321,8 +331,10 @@ if science_direct_cont == "y":
         print("If file exists rename: sciencedirect.xlsx, and restart program.")
         input("Press enter to continue: ")
         science_direct_cont = 'n'
+
 #michigan searcher
-michigan_cont = input("Search Michigan Press? (press y): ")
+#michigan_cont = input("Search Michigan Press? (press y): ")
+michigan_cont = 'y'
 if michigan_cont == "y":
     print('Loading Michigan database.')
     fulcrum_searchtxt = ""
@@ -338,7 +350,8 @@ if michigan_cont == "y":
 
 #vitalsource/textbook searcher
 #could be used for general textbook searching
-vitalsource_cont = input("Search textbooks/vitalsource? (press y): ")
+#vitalsource_cont = input("Search textbooks/vitalsource? (press y): ")
+vitalsource_cont = 'y'
 if vitalsource_cont == "y":
     print('Loading textbook database.')
     try:
@@ -352,7 +365,8 @@ if vitalsource_cont == "y":
         vitalsource_cont = 'n'
 
 #search gutenberg text file
-gutenberg_cont = input("Search Project Gutenberg? (press y): ")
+#gutenberg_cont = input("Search Project Gutenberg? (press y): ")
+gutenberg_cont = 'y'
 if gutenberg_cont == 'y':
     print('Loading Gutenberg database.')
     try:
@@ -393,7 +407,7 @@ def list_to_file(var_list,name):
     outfile.close()
     return file_name
 
-
+print(" ")
 cont = "y"
 while cont == "y":
     request = []
@@ -444,6 +458,7 @@ while cont == "y":
     print('----------------')
     request.append('----------------')
     list_to_file(request,title + "_" "results")
+
     print("Another search? (press y)  Enter any other button to exit.")
     cont = input("Enter: ")
 
