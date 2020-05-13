@@ -343,32 +343,40 @@ def pg_searcher(title_input,author_input,file):
 
 ###ask whether we want
 ###to search certain dbs
-jstor_cont = input("Search JSTOR? (press y): ")
+#jstor_cont = input("Search JSTOR? (press y): ")
+jstor_cont = "y"
 if jstor_cont == "y":
+    print("loading jstor books")
     jstor_workbook = xlrd.open_workbook('jstor_books.xlsx')
     jstor_books = jstor_workbook.sheet_by_index(0)
     jstorheadings = jstor_books.row_values(0)
     jstortitle_col = jstorheadings.index('Title')
     jstorauthor_col = jstorheadings.index('Authors')
 
-muse_cont = input("Search Project Muse? (press y): ")
+#muse_cont = input("Search Project Muse? (press y): ")
+muse_cont = "y"
 if muse_cont == "y":
+    print("loading muse books")
     muse_workbook = xlrd.open_workbook("project_muse_free_covid_book.xlsx")
     muse_books = muse_workbook.sheet_by_index(0)
     museheadings = muse_books.row_values(0)
     musetitle_col = museheadings.index('Title')
     museauthor_col = museheadings.index('Contributor')
 
-ohio_cont = input("Search Ohio? (press y): ")
+#ohio_cont = input("Search Ohio? (press y): ")
+ohio_cont = "y"
 if ohio_cont == "y":
+    print("loading ohio books")
     ohio_workbook = xlrd.open_workbook("OhioStateUnivPress-OpenTitles-KnowledgeBank.xlsx")
     ohio_books = ohio_workbook.sheet_by_index(0)
     ohioheadings = ohio_books.row_values(0)
     ohiotitle_col = ohioheadings.index('Title')
     ohioauthor_col = ohioheadings.index('Contributors')
 
-science_direct_cont = input("Search Science Direct? (press y): ")
+#science_direct_cont = input("Search Science Direct? (press y): ")
+science_direct_cont = "y"
 if science_direct_cont == "y":
+    print("loading science direct books")
     sd_workbook = xlrd.open_workbook("sciencedirect.xlsx")
     sd_books = sd_workbook.sheet_by_index(0)
     sdheadings = sd_books.row_values(0)
@@ -376,8 +384,10 @@ if science_direct_cont == "y":
     sdauthor_col = sdheadings.index("first_author")
 
 #michigan searcher
-michigan_cont = input("Search Michigan? (press y): ")
+#michigan_cont = input("Search Michigan? (press y): ")
+michigan_cont = "y"
 if michigan_cont == "y":
+    print("loading michigan press books")
     fulcrum_searchtxt = ""
     regex = re.compile('[^a-zA-Z]')
     for n in range(1,13):
@@ -391,16 +401,20 @@ if michigan_cont == "y":
 
 #vitalsource/textbook searcher
 #could be used for general textbook searching
-vitalsource_cont = input("Search vitalsource? (press y): ")
+#vitalsource_cont = input("Search vitalsource? (press y): ")
+vitalsource_cont = "y"
 if vitalsource_cont == "y":
+    print("loading textbook list")
     issn_col = headings.index('ISSN')
     textbook_workbook = xlrd.open_workbook('Spring 2020 Book List.xlsx')
     textbooks = textbook_workbook.sheet_by_index(0)
     tb_issn_col = 2
 
 #to search project gutenberg
-gutenberg_cont = input("Search Project Gutenberg? (press y): ")
+#gutenberg_cont = input("Search Project Gutenberg? (press y): ")
+gutenberg_cont = "y"
 if gutenberg_cont == 'y':
+    print("loading gutenberg books")
     fin = open('GUTINDEX.txt', encoding="utf-8")
 
 ###helper functions###
