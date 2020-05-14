@@ -3,6 +3,7 @@
 # python file is located. Rename file 'requests.xlsx.'
 
 import requests, bs4,  xlrd, re, datetime
+from nltk.corpus import stopwords
 
 s = requests.Session()
 
@@ -211,9 +212,11 @@ def hathi_full_time_access(title,author):
 
 ###function for red_shelf_access
 ###pretty much works
-def red_shelf_access(title, author):
-    query = title + ' ' + author
-    red_query = query.replace(" ", "%20")
+def red_shelf_access(title,author):
+    title = title.lower()
+    author = author.lower()
+    query = title + " " + author
+    red_query = query.replace(" ", "+")
     red_shelf_url = 'https://studentresponse.redshelf.com/search/?terms=%s' % red_query
     red_shelf = s.get(red_shelf_url)
 
@@ -224,8 +227,16 @@ def red_shelf_access(title, author):
             title_items = redSoup.select(".title-row")
             # print(title_items[0].getText())
             t1 = title_items[0].getText()
-            t2 = "".join(t1.split())
-            title_nospace = "".join(title.split())
+            # remove stopwords
+            t1 = t1.lower()
+            t1_list = t1.split()
+            t1_no_stop = [word for word in t1_list if not word in stopwords.words()]
+            t2 = "".join(t1_no_stop)
+            #remove stopwords from query
+            title_list = title.split()
+            title_no_stop = [word for word in title_list if not word in stopwords.words()]
+            title_nospace = "".join(title_no_stop)
+
             if title_nospace in t2:
 
                 return "Found in Red Shelf.", red_shelf_url
@@ -470,7 +481,7 @@ for row in range(1,books.nrows):
     return_helper(unc_result,batch)
     open_library_result = open_library_access(title, author)
     return_helper(open_library_result, batch)
-    red_shelf_result = red_shelf_access(title, author)
+    red_shelf_result = red_shelf_access(title,author)
     return_helper(red_shelf_result, batch)
     hathi_temp_result = hathi_temp_access(title, author)
     return_helper(hathi_temp_result, batch)
